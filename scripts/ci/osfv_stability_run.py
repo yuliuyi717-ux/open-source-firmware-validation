@@ -13,7 +13,7 @@ import tqdm
 
 N_REPEATS = 5
 LOGS_DIR = "ci_logs"
-MANUAL_TESTS_LIST = "scripts/ci/regression-scope/configs/tests-list.txt"
+MANUAL_TESTS_LIST = "scripts/ci/regression-scope/configs/release_tests_suite_list.txt"
 DEVICES_LIST = "scripts/ci/regression-scope/configs/release_tests_devices.csv"
 
 
@@ -40,3 +40,4 @@ for i in repeats:
     os.makedirs(logs_dir)
     env["LOGS_DIR"] = logs_dir
     out = run_command(["./scripts/ci/develop_pr_auto_regression.sh"], env=env)
+    print(out)
