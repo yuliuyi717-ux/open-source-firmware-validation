@@ -4,11 +4,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import glob
 import json
 import os
 import subprocess
 import sys
-import glob
 
 import fire
 
@@ -22,6 +22,7 @@ def run_command(cmd, env=os.environ.copy()):
     out = subprocess.run(cmd, capture_output=True, env=env)
     out = out.stdout.decode("utf-8").splitlines()
     return out
+
 
 def _load_device_env_vars(device_names, devices_dir):
     envs = []
@@ -37,12 +38,16 @@ def _load_device_env_vars(device_names, devices_dir):
                 candidates = glob.glob(os.path.join(devices_dir, f"{name}_*.json"))
 
         if len(candidates) != 1:
-            raise ValueError(f"Device '{name}' matched {len(candidates)} files: {candidates}")
+            raise ValueError(
+                f"Device '{name}' matched {len(candidates)} files: {candidates}"
+            )
 
         with open(candidates[0]) as f:
             device_cfg = json.load(f)
         if "env_vars" not in device_cfg or not isinstance(device_cfg["env_vars"], dict):
-            raise ValueError(f"Device file '{candidates[0]}' must contain an 'env_vars' dict")
+            raise ValueError(
+                f"Device file '{candidates[0]}' must contain an 'env_vars' dict"
+            )
         envs.append(device_cfg["env_vars"])
     return envs
 
@@ -75,6 +80,7 @@ def get_files_from_list(list_path):
             files.append(line.split("\t", 1)[0])
     return files
 
+
 class CLI:
     def __init__(
         self,
@@ -93,7 +99,9 @@ class CLI:
             self.get_changed_files = lambda: get_files_from_list(override_tests_list)
 
     def _prepare_parser(self, device_name):
-        device_envs = _load_device_env_vars(device_name, self.devices_dir) if device_name else []
+        device_envs = (
+            _load_device_env_vars(device_name, self.devices_dir) if device_name else []
+        )
         with open(self.rules_file) as rules_file:
             rules = json.load(rules_file)["rules"]
         changed_files = self.get_changed_files()
