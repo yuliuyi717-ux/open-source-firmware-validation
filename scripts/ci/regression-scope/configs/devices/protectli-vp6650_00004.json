@@ -2,6 +2,7 @@
     "env_vars": {
         "ASSET_ID": "00002",
         "RTE_IP": "192.168.10.14",
-        "CONFIG": "protectli-vp6650"
+        "CONFIG": "protectli-vp6650",
+        "DEVICE_IP": "192.168.10.98"
     }
 }

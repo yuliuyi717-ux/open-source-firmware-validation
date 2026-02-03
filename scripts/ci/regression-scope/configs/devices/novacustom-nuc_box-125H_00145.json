@@ -4,6 +4,7 @@
         "RTE_IP": "192.168.10.73",
         "CONFIG": "novacustom-nuc_box-125H",
         "SONOFF_IP": "192.168.10.130",
-        "PIKVM_IP": "192.168.10.75"
+        "PIKVM_IP": "192.168.10.75",
+        "DEVICE_IP": "192.168.10.204"
     }
 }
