@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# SPDX-FileCopyrightText: 2025 3mdeb <contact@3mdeb.com>
+# SPDX-FileCopyrightText: 2026 3mdeb <contact@3mdeb.com>
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -22,14 +22,14 @@ if [[ -n $MANUAL_TESTS_LIST ]]; then
     TESTS_LIST="--override_tests_list $MANUAL_TESTS_LIST"
     echo $TESTS_LIST
 else
-    TESTS_LIST=""
+    TESTS_LIST="--compare_to origin/develop"
 fi
 
 RULES_FILE="${RULES_FILE:-scripts/ci/regression-scope/configs/pr-regression-rules.json}"
 DEVICES="${DEVICES:-scripts/ci/regression-scope/configs/pr-regression-devices.csv}"
 DEVICES=$(cat $DEVICES | tr '\n' ' ')
 
-mapfile -t commands < <("${SCRIPT_DIR}"/regression-scope/osfv_regression_scope.py commands $DEVICES --compare_to origin/develop $TESTS_LIST --rules_file "$RULES_FILE" )
+mapfile -t commands < <("${SCRIPT_DIR}"/regression-scope/osfv_regression_scope.py commands $DEVICES $TESTS_LIST --rules_file "$RULES_FILE" )
 
 if [[ ${#commands[@]} -eq 0 ]]; then
     echo "No tests required to run for these changes."
