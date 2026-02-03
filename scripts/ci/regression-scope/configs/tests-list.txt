@@ -1,1 +1,1 @@
-dasharo-compatibility/test.robot
+dasharo-compatibility/dmidecode.robot
