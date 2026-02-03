@@ -1,0 +1,7 @@
+{
+    "env_vars": {
+        "ASSET_ID": "00191",
+        "RTE_IP": "192.168.10.247",
+        "CONFIG": "novacustom-v540tu"
+    }
+}
