@@ -9,6 +9,13 @@ import shutil
 import subprocess
 import sys
 
+import tqdm
+
+N_REPEATS = 5
+LOGS_DIR = "ci_logs"
+MANUAL_TESTS_LIST = "scripts/ci/regression-scope/configs/tests-list.txt"
+DEVICES_LIST = "scripts/ci/regression-scope/configs/release_tests_devices.csv"
+
 
 def run_command(cmd, env=os.environ.copy()):
     """
@@ -19,10 +26,6 @@ def run_command(cmd, env=os.environ.copy()):
     return out
 
 
-LOGS_DIR = "ci_logs"
-MANUAL_TESTS_LIST = "scripts/ci/regression-scope/configs/tests-list.txt"
-DEVICES_LIST = "scripts/ci/regression-scope/configs/release_tests_devices.csv"
-
 env = os.environ.copy()
 env["ALLOW_DIRTY"] = "1"
 env["MANUAL_TESTS_LIST"] = MANUAL_TESTS_LIST
@@ -31,9 +34,9 @@ env["DEVICES"] = DEVICES_LIST
 shutil.rmtree(LOGS_DIR, ignore_errors=True)
 os.makedirs(LOGS_DIR)
 
-for i in range(2):
+repeats = tqdm.tqdm(range(N_REPEATS))
+for i in repeats:
     logs_dir = f"{LOGS_DIR}/run{i}"
     os.makedirs(logs_dir)
     env["LOGS_DIR"] = logs_dir
     out = run_command(["./scripts/ci/develop_pr_auto_regression.sh"], env=env)
-    print("\n".join(out))

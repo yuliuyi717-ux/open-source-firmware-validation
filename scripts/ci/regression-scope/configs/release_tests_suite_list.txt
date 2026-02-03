@@ -1,1 +1,2 @@
 dasharo-compatibility/dmidecode.robot
+dasharo-security/tpm.robot
