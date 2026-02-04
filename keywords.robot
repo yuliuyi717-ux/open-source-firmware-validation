@@ -27,6 +27,8 @@ Serial Setup
     ...    ser2net port as an arguments.
     [Arguments]    ${host}    ${s2n_port}
     # provide ser2net port where serial was redirected
+    SSHLibrary.Execute Command    systemctl restart ser2net
+    Sleep    5s
     Telnet.Open Connection
     ...    ${host}
     ...    port=${s2n_port}
