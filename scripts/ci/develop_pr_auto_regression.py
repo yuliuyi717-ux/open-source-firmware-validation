@@ -165,7 +165,7 @@ def main(silent=False):
     rules = os.environ.get(
         "RULES_FILE", "scripts/ci/regression-scope/configs/pr-regression-rules.json"
     )
-    devices = " ".join(
+    devices = (
         Path(
             os.environ.get(
                 "DEVICES",
@@ -175,7 +175,10 @@ def main(silent=False):
         .read_text()
         .splitlines()
     )
-
+    devices = [
+        d for d in devices if not d.startswith("#")
+    ]  # filter out commented lines
+    devices = " ".join(devices)
     if os.environ.get("MANUAL_TESTS_LIST"):
         tests = ["--override_tests_list", os.environ["MANUAL_TESTS_LIST"]]
         dprint(" ".join(tests))
