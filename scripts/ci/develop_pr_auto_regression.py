@@ -14,9 +14,9 @@ import threading
 import time
 from pathlib import Path
 
-MAX_ATTEMPTS = 16
 BASE_SLEEP_SECONDS = 8
 MAX_SLEEP_SECONDS = 1024
+MAX_SNIPEIT_WAIT_SECONDS = 86400  # 24 h
 
 CHECKED_OUT = []
 PROCS = {}
@@ -36,21 +36,28 @@ def run(cmd, env=None, stdout=None, stderr=None):
 
 def snipeit_checkout(asset_id):
     sleep_s = BASE_SLEEP_SECONDS
-    for attempt in range(1, MAX_ATTEMPTS + 1):
+    attempt = 0
+    t0 = time.time()
+    total_time = 0
+    while True:
+        if total_time >= MAX_SLEEP_SECONDS:
+            dprint(f"Device checkout failed after {attempt} attempts.")
+            return 1
+
+        attempt += 1
         dprint(
-            f"Attempt {attempt}/{MAX_ATTEMPTS}: trying to check out the device {asset_id}..."
+            f"Attempt {attempt} ({total_time}/{MAX_SLEEP_SECONDS} s): trying to check out the device {asset_id}..."
         )
         r = run(["osfv_cli", "snipeit", "check_out", "--asset_id", asset_id])
         if r.returncode == 0:
             dprint(f"Check out {asset_id} succeeded!")
             CHECKED_OUT.append(asset_id)
             return 0
-        if attempt == MAX_ATTEMPTS:
-            dprint(f"Device checkout failed after {MAX_ATTEMPTS} attempts.")
-            return 1
+
         dprint(f"Device not available. Sleeping {sleep_s}s before retry...")
         time.sleep(sleep_s)
-        sleep_s = sleep_s * 2 if sleep_s < MAX_SLEEP_SECONDS else sleep_s
+        total_time = time.time() - t0
+        sleep_s = min(sleep_s * 2, MAX_SLEEP_SECONDS)
     return 1
 
 
