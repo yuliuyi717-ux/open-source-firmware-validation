@@ -14,8 +14,9 @@ import threading
 import time
 from pathlib import Path
 
-MAX_ATTEMPTS = 8
+MAX_ATTEMPTS = 16
 BASE_SLEEP_SECONDS = 8
+MAX_SLEEP_SECONDS = 1024
 
 CHECKED_OUT = []
 PROCS = {}
@@ -49,7 +50,7 @@ def snipeit_checkout(asset_id):
             return 1
         dprint(f"Device not available. Sleeping {sleep_s}s before retry...")
         time.sleep(sleep_s)
-        sleep_s *= 2
+        sleep_s = sleep_s * 2 if sleep_s < MAX_SLEEP_SECONDS else sleep_s
     return 1
 
 
@@ -118,7 +119,7 @@ def execute_commands(commands, logs_dir):
             dprint(f"Run {idx} running basic-platform-setup")
             run(
                 [
-                    str(Path(__file__).resolve().parent / "scripts/run.sh"),
+                    "./scripts/run.sh",
                     "util/basic-platform-setup.robot",
                 ],
                 env=env,
