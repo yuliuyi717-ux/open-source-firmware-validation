@@ -15,12 +15,13 @@ N_REPEATS = 5
 LOGS_DIR = "ci_logs"
 MANUAL_TESTS_LIST = "scripts/ci/regression-scope/configs/release_tests_suite_list.txt"
 DEVICES_LIST = "scripts/ci/regression-scope/configs/release_tests_devices.csv"
-
+RULES = "scripts/ci/regression-scope/configs/release_tests_rules.json"
 
 env = os.environ
 env["ALLOW_DIRTY"] = "1"
 env["MANUAL_TESTS_LIST"] = MANUAL_TESTS_LIST
 env["DEVICES"] = DEVICES_LIST
+env["RULES_FILE"] = RULES
 
 shutil.rmtree(LOGS_DIR, ignore_errors=True)
 os.makedirs(LOGS_DIR)
