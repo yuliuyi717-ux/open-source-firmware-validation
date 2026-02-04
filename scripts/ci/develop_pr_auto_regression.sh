@@ -76,7 +76,7 @@ for command in "${commands[@]}"; do
         trap snipeit_cleanup EXIT INT TERM HUP
         snipeit_checkout "$ASSET_ID" || exit 2
 
-        if [ -n "$SKIP_BASIC_PLATFORM_SETUP" ]; then
+        if [ -z "$SKIP_BASIC_PLATFORM_SETUP" ]; then
             echo Run $i running basic-platform-setup
             eval ./scripts/run.sh util/basic-platform-setup.robot > "$LOGS_DIR/run_${i}.log" 2>&1
         fi

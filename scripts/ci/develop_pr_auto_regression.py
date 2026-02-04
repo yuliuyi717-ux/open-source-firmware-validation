@@ -114,7 +114,7 @@ def execute_commands(commands, logs_dir):
             statuses[idx] = 2
             return
         log = open(logs_dir / f"run_{idx}.log", "w")
-        if env.get("SKIP_BASIC_PLATFORM_SETUP"):
+        if not env.get("SKIP_BASIC_PLATFORM_SETUP"):
             dprint(f"Run {idx} running basic-platform-setup")
             run(
                 [
