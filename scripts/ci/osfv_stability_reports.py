@@ -114,7 +114,7 @@ average_runtime_per_suite_per_device = {
     device: {suite: sum(times) / len(times) for suite, times in suites.items()}
     for device, suites in runtime_per_suite_per_device.items()
 }
-
+print(f"\n{GREEN}Report from {len(list(ROOT.glob("run*")))} runs:{CLEAR}")
 print(f"\n{GREEN}Total PASS percentage: {total_pass_percentage:.2f}{CLEAR} %")
 
 print(f"\nPer device PASS percentages:")
