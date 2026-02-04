@@ -47,7 +47,6 @@ runtime_per_device = {}
 runtime_per_suite = {}
 runtime_per_suite_per_device = {}
 
-
 for run_dir in ROOT.glob("run*"):
     if not run_dir.is_dir():
         continue
@@ -60,6 +59,7 @@ for run_dir in ROOT.glob("run*"):
             continue
 
         device = device_dir.name
+        device_total_time = 0.0
 
         for suite_dir in device_dir.iterdir():
             if not suite_dir.is_dir():
@@ -81,12 +81,15 @@ for run_dir in ROOT.glob("run*"):
             passes_per_suite.setdefault(suite_name, []).append(pct)
 
             runtime = suite_runtime_seconds(out_xml)
-            run_total_time += runtime
+            device_total_time += runtime
             runtime_per_device.setdefault(device, []).append(runtime)
             runtime_per_suite.setdefault(suite_name, []).append(runtime)
             runtime_per_suite_per_device.setdefault(device, {}).setdefault(
                 suite_name, []
             ).append(runtime)
+
+    if device_total_time > run_total_time:
+        run_total_time = device_total_time
 
     if run_total_time > 0:
         run_runtimes[run_name] = run_total_time
