@@ -4,6 +4,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import subprocess
 from pathlib import Path
 
 from robot.api import ExecutionResult
@@ -16,8 +17,29 @@ YELLOW = "\033[33m"
 CLEAR = "\033[0m"
 
 
+def get_recovered_path(out_xml: Path) -> Path:
+    return out_xml.with_name(out_xml.name + "_recovered")
+
+
 def suite_pass_percentage(out_xml: Path) -> float:
-    result = ExecutionResult(out_xml)
+    try:
+        result = ExecutionResult(out_xml)
+    except:
+        print(f"{YELLOW}WARNING{CLEAR}: invalid xml: {out_xml}")
+        try:
+            recovered_path = get_recovered_path(out_xml)
+            out = subprocess.run(
+                ["xmllint", f"{out_xml}", "--recover", "--output", f"{recovered_path}"],
+                capture_output=True,
+            )
+            print(out.stderr.decode("utf-8"))
+            result = ExecutionResult(recovered_path)
+        except Exception as e:
+            print(
+                f"{RED}WARNING{CLEAR}: could not recover xml, skipping suite: {out_xml}"
+            )
+            print(e)
+            return 0
     stats = result.statistics.total
     total = stats.passed + stats.failed
     if total == 0:
@@ -26,12 +48,46 @@ def suite_pass_percentage(out_xml: Path) -> float:
 
 
 def suite_runtime_seconds(out_xml: Path) -> float:
-    result = ExecutionResult(out_xml)
+    try:
+        result = ExecutionResult(out_xml)
+    except:
+        print(f"{YELLOW}WARNING{CLEAR}: invalid xml: {out_xml}")
+        try:
+            recovered_path = get_recovered_path(out_xml)
+            out = subprocess.run(
+                ["xmllint", f"{out_xml}", "--recover", "--output", f"{recovered_path}"],
+                capture_output=True,
+            )
+            print(out.stderr.decode("utf-8"))
+            result = ExecutionResult(recovered_path)
+        except Exception as e:
+            print(
+                f"{RED}WARNING{CLEAR}: could not recover xml, skipping suite: {out_xml}"
+            )
+            print(e)
+            return 0
     return result.suite.elapsedtime / 1000.0
 
 
 def is_suite_skipped(out_xml: Path) -> bool:
-    result = ExecutionResult(out_xml)
+    try:
+        result = ExecutionResult(out_xml)
+    except:
+        print(f"{YELLOW}WARNING{CLEAR}: invalid xml: {out_xml}")
+        try:
+            recovered_path = get_recovered_path(out_xml)
+            out = subprocess.run(
+                ["xmllint", f"{out_xml}", "--recover", "--output", f"{recovered_path}"],
+                capture_output=True,
+            )
+            print(out.stderr.decode("utf-8"))
+            result = ExecutionResult(recovered_path)
+        except Exception as e:
+            print(
+                f"{RED}WARNING{CLEAR}: could not recover xml, skipping suite: {out_xml}"
+            )
+            print(e)
+            return True
     stats = result.statistics.total
     return stats.passed == 0 and stats.failed == 0
 
@@ -64,8 +120,12 @@ for run_dir in ROOT.glob("run*"):
         for suite_dir in device_dir.iterdir():
             if not suite_dir.is_dir():
                 continue
+            if "merged" in suite_dir.name:
+                continue
 
-            out_files = list(suite_dir.glob("*_out.xml"))
+            out_files = list(suite_dir.glob("*_out.xml")) + list(
+                suite_dir.glob("*_output.xml")
+            )
             if not out_files:
                 continue
             if is_suite_skipped(out_files[0]):
