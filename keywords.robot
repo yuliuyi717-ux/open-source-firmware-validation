@@ -159,11 +159,11 @@ Login To Linux Via SSH
     ...    username and password respectively. The optional timeout
     ...    parameter can be used to specify how long we want to
     ...    wait for the login prompt.
-    [Arguments]    ${username}    ${password}    ${timeout}=180    ${prompt}=${DEVICE_OS_USER_PROMPT}
+    [Arguments]    ${username}    ${password}    ${timeout}=60    ${prompt}=${DEVICE_OS_USER_PROMPT}
     Should Not Be Empty    ${DEVICE_IP}    msg=DEVICE_IP variable must be defined
     # We need this when switching from PiKVM to SSH
     Remap Keys Variables From PiKVM
-    FOR    ${i}    IN RANGE    1    120
+    FOR    ${i}    IN RANGE    1    5
         SSHLibrary.Open Connection    ${DEVICE_IP}    prompt=${prompt}
         SSHLibrary.Set Client Configuration
         ...    timeout=${timeout}
