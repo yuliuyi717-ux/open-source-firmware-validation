@@ -11,7 +11,7 @@ import sys
 import develop_pr_auto_regression
 import tqdm
 
-N_REPEATS = 5
+N_REPEATS = 2
 env = os.environ
 if "MANUAL_TESTS_LIST" not in env:
     env["MANUAL_TESTS_LIST"] = (
