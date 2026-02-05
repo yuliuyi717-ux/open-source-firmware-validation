@@ -38,6 +38,7 @@ ${PLATFORM_RAM_SIZE}=                   4209492
 ${SATA_SUPPORT}=                        ${True}
 ${TESTS_IN_XCP_NG_SUPPORT}=             ${True}
 @{TESTED_LINUX_DISTROS}=                ${ENV_ID_UBUNTU}    ${ENV_ID_XCP_NG}
+${CHECK_POWER_LED_SUPPORT}=             ${False}
 
 
 *** Keywords ***
