@@ -16,9 +16,15 @@ RED = "\033[31m"
 YELLOW = "\033[33m"
 CLEAR = "\033[0m"
 
+REBOT_SPLITTER = "./scripts/lib/rebot_splitter.py"
+
 
 def get_recovered_path(out_xml: Path) -> Path:
     return out_xml.with_name(out_xml.name + "_recovered")
+
+
+def get_date_suite_dir(suite_dir: Path) -> str:
+    return "_".join(suite_dir.name.split("_")[-6:])
 
 
 def suite_pass_percentage(out_xml: Path) -> float:
@@ -120,12 +126,19 @@ for run_dir in ROOT.glob("run*"):
         for suite_dir in device_dir.iterdir():
             if not suite_dir.is_dir():
                 continue
-            if "merged" in suite_dir.name:
-                continue
 
             out_files = list(suite_dir.glob("*_out.xml")) + list(
                 suite_dir.glob("*_output.xml")
             )
+            if "merged" in suite_dir.name:  # merged need to be unpacked and left alone
+                date = get_date_suite_dir(suite_dir)
+                for out_f in out_files:
+                    subprocess.run(
+                        [REBOT_SPLITTER, out_f.absolute(), device_dir.absolute(), date],
+                        stdout=subprocess.DEVNULL,
+                    )
+                continue
+
             if not out_files:
                 continue
             if is_suite_skipped(out_files[0]):
