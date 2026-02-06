@@ -7,8 +7,8 @@ name: OSFV Regression managed by scripts instead of actions
 # Only try to run if a robot file or a lib was modified in the PR
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 6 * * 6' # Every week, 6 AM on Saturday
+  # schedule:
+  #   - cron: '0 6 * * 6' # Every week, 6 AM on Saturday
 
 env:
   ALLOW_DIRTY: 1
