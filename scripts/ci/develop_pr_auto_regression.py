@@ -169,7 +169,7 @@ def main(silent=False):
         Path(
             os.environ.get(
                 "DEVICES",
-                "scripts/ci/regression-scope/configs/pr-regression-devices.csv",
+                "scripts/ci/regression-scope/configs/pr-regression-devices.txt",
             )
         )
         .read_text()
