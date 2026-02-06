@@ -122,17 +122,6 @@ def execute_commands(commands, logs_dir):
             statuses[idx] = 2
             return
         log = open(logs_dir / f"run_{idx}.log", "w")
-        if not env.get("SKIP_BASIC_PLATFORM_SETUP"):
-            dprint(f"Run {idx} running basic-platform-setup")
-            run(
-                [
-                    "./scripts/run.sh",
-                    "util/basic-platform-setup.robot",
-                ],
-                env=env,
-                stdout=log,
-                stderr=log,
-            )
         dprint(f'Run {idx} executing: "{actual}"')
         p = subprocess.Popen(shlex.split(actual), env=env, stdout=log, stderr=log)
         PROCS[idx] = p
