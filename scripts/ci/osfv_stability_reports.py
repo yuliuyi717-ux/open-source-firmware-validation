@@ -17,6 +17,7 @@ YELLOW = "\033[33m"
 CLEAR = "\033[0m"
 
 REBOT_SPLITTER = "./scripts/lib/rebot_splitter.py"
+SUITES_TO_SKIP_GLOB = ["merged"]  # Might make sense to add: "basic-platform-setup"
 
 
 def get_recovered_path(out_xml: Path) -> Path:
@@ -137,6 +138,8 @@ for run_dir in ROOT.glob("run*"):
                         [REBOT_SPLITTER, out_f.absolute(), device_dir.absolute(), date],
                         stdout=subprocess.DEVNULL,
                     )
+
+            if any(ex.lower() in suite_dir.name for ex in SUITES_TO_SKIP_GLOB):
                 continue
 
             if not out_files:
