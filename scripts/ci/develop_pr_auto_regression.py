@@ -16,8 +16,13 @@ from pathlib import Path
 
 BASE_SLEEP_SECONDS = 8
 MAX_SLEEP_SECONDS = 1024
-MAX_SNIPEIT_WAIT_SECONDS = 86400  # 24 h
-
+try:
+    MAX_SNIPEIT_WAIT_SECONDS = int(os.getenv("MAX_SNIPEIT_WAIT_SECONDS", 86400))  # 24 h
+except:
+    print(
+        "env variable MAX_SNIPEIT_WAIT_SECONDS is not an integer: `{MAX_SNIPEIT_WAIT_SECONDS}`"
+    )
+    sys.exit(1)
 CHECKED_OUT = []
 PROCS = {}
 debug = True
@@ -40,13 +45,13 @@ def snipeit_checkout(asset_id):
     t0 = time.time()
     total_time = 0
     while True:
-        if total_time >= MAX_SLEEP_SECONDS:
+        if total_time >= MAX_SNIPEIT_WAIT_SECONDS:
             dprint(f"Device checkout failed after {attempt} attempts.")
             return 1
 
         attempt += 1
         dprint(
-            f"Attempt {attempt} ({total_time}/{MAX_SLEEP_SECONDS} s): trying to check out the device {asset_id}..."
+            f"Attempt {attempt} ({total_time}/{MAX_SNIPEIT_WAIT_SECONDS} s): trying to check out the device {asset_id}..."
         )
         r = run(["osfv_cli", "snipeit", "check_out", "--asset_id", asset_id])
         if r.returncode == 0:
