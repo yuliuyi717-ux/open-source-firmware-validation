@@ -201,6 +201,9 @@ def main(silent=False):
     statuses = execute_commands(commands, logs_dir)
 
     exit_code = 0
+    if len(statuses.items()) == 1:
+        i, rc = list(statuses.items())[0]
+        return rc
     for i, rc in statuses.items():
         if rc != 0:
             dprint(f"Run {i} failed with exit code {rc}.")
